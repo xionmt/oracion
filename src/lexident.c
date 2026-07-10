@@ -22,6 +22,13 @@ struct bn3f_lexeme _bn3f_lex_identifier( FILE * f )
 
 	n = fgetc( f );
 
+	/* WHY: see lexcomnt.c for why EOF must be checked before any
+	 * fseek( -1 ) rewind on mismatch */
+	if(n == EOF)
+	{
+		return r;
+	}
+
 	if(!_ident_startchar( n ))
 	{
 		fseek( f, -1, SEEK_CUR );
@@ -35,7 +42,13 @@ struct bn3f_lexeme _bn3f_lex_identifier( FILE * f )
 	{
 		n = fgetc( f );
 
-		r.len++;
+		/* WHY: check EOF / mismatch before bumping len — fgetc( )
+		 * does not consume a byte at EOF, so counting it would make
+		 * len overshoot the real token width */
+		if(n == EOF)
+		{
+			break;
+		}
 
 		if(!_ident_char( n ))
 		{
@@ -44,6 +57,8 @@ struct bn3f_lexeme _bn3f_lex_identifier( FILE * f )
 
 			break;
 		}
+
+		r.len++;
 	}
 
 	return r;

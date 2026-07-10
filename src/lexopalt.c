@@ -12,6 +12,11 @@ struct bn3f_lexeme _bn3f_lex_opalternate( FILE * f )
 
 	n = fgetc( f );
 
+	if(n == EOF)
+	{
+		return r;
+	}
+
 	if(n != '|')
 	{
 		fseek( f, -1, SEEK_CUR );

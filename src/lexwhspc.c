@@ -12,6 +12,13 @@ struct bn3f_lexeme _bn3f_lex_whitespace( FILE * f )
 
 	n = fgetc( f );
 
+	/* WHY: see lexcomnt.c for why EOF must be checked before any
+	 * fseek( -1 ) rewind on mismatch */
+	if(n == EOF)
+	{
+		return r;
+	}
+
 	if(n != '\t' && n != '\n' && n != '\v'
 	&& n != '\f' && n != '\r' && n != ' ')
 	{
@@ -26,6 +33,13 @@ struct bn3f_lexeme _bn3f_lex_whitespace( FILE * f )
 	for(;;)
 	{
 		n = fgetc( f );
+
+		/* WHY: break (not fseek) — the EOF byte itself was never
+		 * consumed, so the stream position is already correct */
+		if(n == EOF)
+		{
+			break;
+		}
 
 		if(n != '\t' && n != '\n' && n != '\v'
 		&& n != '\f' && n != '\r' && n != ' ')

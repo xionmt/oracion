@@ -5,7 +5,7 @@ struct bn3f_lexeme _bn3f_lex_oprange( FILE * f )
 {
 	struct bn3f_lexeme r;
 	int n;
-	size_t i;
+	ptri i;
 
 	r.len   = 0;
 	r.type  = BN3F_LEXEME_OPRANGE;
@@ -15,9 +15,22 @@ struct bn3f_lexeme _bn3f_lex_oprange( FILE * f )
 	{
 		n = fgetc( f );
 
+		if(n == EOF)
+		{
+			/* WHY: EOF is not consumed, so only rewind the dots that
+			 * were actually read (i of them). Seeking -(i+1) would
+			 * walk one byte before the first '.' */
+			if(i > 0)
+			{
+				fseek( f, -(long)i, SEEK_CUR );
+			}
+
+			return r;
+		}
+
 		if(n != '.')
 		{
-			fseek( f, -(i + 1), SEEK_CUR );
+			fseek( f, -(long)(i + 1), SEEK_CUR );
 
 			return r;
 		}

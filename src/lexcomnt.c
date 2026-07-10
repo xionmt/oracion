@@ -12,6 +12,15 @@ struct bn3f_lexeme _bn3f_lex_comment( FILE * f )
 
 	n[0] = fgetc( f );
 
+	/* WHY: fgetc( ) does not consume a byte when the stream is already
+	 * at EOF, so there is nothing to push back; falling through to the
+	 * fseek( ) below would rewind onto the last real byte instead and
+	 * cause this scanner (and the outer lex loop) to spin forever */
+	if(n[0] == EOF)
+	{
+		return r;
+	}
+
 	if(n[0] != '/')
 	{
 		fseek( f, -1, SEEK_CUR );
@@ -20,6 +29,15 @@ struct bn3f_lexeme _bn3f_lex_comment( FILE * f )
 	}
 
 	n[1] = fgetc( f );
+
+	if(n[1] == EOF)
+	{
+		/* WHY: only '/' was consumed — seeking -2 would rewind one
+		 * byte before it and re-feed the prior character */
+		fseek( f, -1, SEEK_CUR );
+
+		return r;
+	}
 
 	if(n[1] != '*')
 	{
