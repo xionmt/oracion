@@ -51,7 +51,7 @@ struct bn3f_lexeme
 
 /** FUNCTION POINTER TYPE DEFINITONS */
 
-typedef struct bn3f_lexeme (*_bn3f_scan_f)( FILE * );
+typedef struct bn3f_lexeme (* _bn3f_scan_f)( FILE * );
 
 /** SUBROUTINE FORWARD DECLARATIONS */
 
@@ -71,8 +71,7 @@ struct bn3f_lexeme _bn3f_lex_opoption( FILE * );
 struct bn3f_lexeme _bn3f_lex_opfiniterepeat( FILE * );
 struct bn3f_lexeme _bn3f_lex_opalternate( FILE * );
 
-s8 _bn3f_lex_loopiter( FILE *, ptri *, struct bn3f_lexeme ***,
-	ptri * );
+s8 _bn3f_lex_loopiter( FILE *, ptri *, struct bn3f_lexeme ***, ptri * );
 
 struct bn3f_lexeme ** bn3f_lex( FILE * );
 

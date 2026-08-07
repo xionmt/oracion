@@ -39,7 +39,7 @@ struct bn3f_lexeme _bn3f_lex_characterlit( FILE * f )
 		{
 			esc = ~esc & 1;
 		}
-		else if(n == '\'' && !esc)
+		else if((n == '\'') && !esc)
 		{
 			break;
 		}

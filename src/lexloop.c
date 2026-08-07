@@ -10,7 +10,9 @@
 
 static ssize_t _find_slot(
 	struct bn3f_lexeme ** lexemes,
-	size_t lexemes_sz )
+	size_t
+	lexemes_sz
+	)
 {
 	size_t i;
 
@@ -28,8 +30,10 @@ static ssize_t _find_slot(
 int8_t _bn3f_lex_loopiter(
 	FILE * f,
 	size_t * streamoffs,
-	struct bn3f_lexeme *** lexemes,
-	size_t * lexemes_sz )
+	struct
+	bn3f_lexeme *** lexemes,
+	size_t * lexemes_sz
+	)
 {
 	struct bn3f_lexeme l;
 	ssize_t i;
@@ -39,8 +43,13 @@ int8_t _bn3f_lex_loopiter(
 	{
 		const int c = fgetc( f );
 
-		fprintf( stderr, "pos=%lu ch0='%c' (%i) fn=%s ... ",
-			*streamoffs, c, c, _dbg_lexemes[i] );
+		fprintf( stderr,
+			"pos=%lu ch0='%c' (%i) fn=%s ... ",
+			*
+			streamoffs,
+			c,
+			c,
+			_dbg_lexemes[i] );
 		fflush( stderr );
 
 		ungetc( c, f );
@@ -72,10 +81,14 @@ int8_t _bn3f_lex_loopiter(
 	if(i == -1)
 	{
 		*lexemes = realloc( *lexemes,
-			sizeof(*lexemes) * ((*lexemes_sz) << 1) ); /* *= 2 */
+			sizeof(*lexemes) * ((*
+			lexemes_sz) << 1)); /* *=
+		                                                      2 */
 
 		/* zero out the new half of the array */
-		memset( (uint8_t *)(*lexemes) + (sizeof(void *) * (*lexemes_sz)), 0,
+		memset((uint8_t *)(*lexemes) + (sizeof(void *) * (*
+			lexemes_sz)),
+			0,
 			*lexemes_sz );
 
 		i = *lexemes_sz;
@@ -83,9 +96,9 @@ int8_t _bn3f_lex_loopiter(
 		*lexemes_sz <<= 1; /* *= 2 */
 	}
 
-	(*lexemes)[i] = malloc( sizeof(struct bn3f_lexeme) );
+	(*lexemes)[i] = malloc( sizeof(struct bn3f_lexeme));
 
-	memcpy( (*lexemes)[i], &l, sizeof l );
+	memcpy((*lexemes)[i], &l, sizeof l );
 
 	return 0;
-}
+} /* _bn3f_lex_loopiter */

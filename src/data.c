@@ -10,7 +10,8 @@
 
 /** STATIC DATA DEFINITIONS */
 
-const char * const _dbg_lexemes[BN3F_MAX_LEXEME] = {
+const char * const _dbg_lexemes[BN3F_MAX_LEXEME] =
+{
 	"COMMENT",
 	"WHITESPACE",
 	"STRINGLIT",
@@ -28,7 +29,8 @@ const char * const _dbg_lexemes[BN3F_MAX_LEXEME] = {
 	"OPALTERNATE"
 };
 
-_bn3f_scan_f _bn3f_scan[BN3F_MAX_LEXEME] = {
+_bn3f_scan_f _bn3f_scan[BN3F_MAX_LEXEME] =
+{
 	_bn3f_lex_comment,
 	_bn3f_lex_whitespace,
 	_bn3f_lex_stringlit,

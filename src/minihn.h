@@ -61,9 +61,9 @@ typedef char chr;
 typedef __UINT32_TYPE__ uchr;
 
 /* Signed bitfield */
-typedef signed int sbf;
+typedef signed sbf;
 /* Unsigned bitfield */
-typedef unsigned int ubf;
+typedef unsigned ubf;
 
 /* Helper function to check if a character is valid ASCII. */
 #define HN_CHR_ISVALID( _chr ) (((_chr) >= 0) && ((_chr) <= 127))

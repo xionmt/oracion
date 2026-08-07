@@ -19,8 +19,8 @@ struct bn3f_lexeme _bn3f_lex_whitespace( FILE * f )
 
 	n = fgetc( f );
 
-	if(n != '\t' && n != '\n' && n != '\v'
-	&& n != '\f' && n != '\r' && n != ' ')
+	if((n != '\t') && (n != '\n') && (n != '\v') && (n != '\f') && (
+			n != '\r') && (n != ' '))
 	{
 		fseek( f, -1, SEEK_CUR );
 
@@ -34,8 +34,8 @@ struct bn3f_lexeme _bn3f_lex_whitespace( FILE * f )
 	{
 		n = fgetc( f );
 
-		if(n != '\t' && n != '\n' && n != '\v'
-		&& n != '\f' && n != '\r' && n != ' ')
+		if((n != '\t') && (n != '\n') && (n != '\v') && (n !=
+			'\f') && (n != '\r') && (n != ' '))
 		{
 			fseek( f, -1, SEEK_CUR );
 

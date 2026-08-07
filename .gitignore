@@ -3,6 +3,7 @@
 /data
 /3rdparty/*
 !/3rdparty/README
+/compile_commands.json
 
 *.o
 *.obj

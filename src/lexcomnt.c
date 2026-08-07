@@ -35,7 +35,8 @@ struct bn3f_lexeme _bn3f_lex_comment( FILE * f )
 		return r;
 	}
 
-	/* default state is meaningless to the logic of the loop that follows */
+	/* default state is meaningless to the logic of the loop that
+	   follows */
 	n[0] = '\0';
 	n[1] = '\0';
 
@@ -53,7 +54,7 @@ struct bn3f_lexeme _bn3f_lex_comment( FILE * f )
 			return r;
 		}
 
-		if(n[r.len & 1] == '/' && n[(r.len - 1) & 1] == '*')
+		if((n[r.len & 1] == '/') && (n[(r.len - 1) & 1] == '*'))
 		{
 			r.len++;
 
@@ -64,4 +65,4 @@ struct bn3f_lexeme _bn3f_lex_comment( FILE * f )
 	}
 
 	return r;
-}
+} /* _bn3f_lex_comment */

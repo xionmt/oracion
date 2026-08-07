@@ -1,4 +1,3 @@
-
 #ifndef INC_API__GETOPT2_H
 #define INC_API__GETOPT2_H
 

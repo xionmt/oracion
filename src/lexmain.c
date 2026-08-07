@@ -20,14 +20,18 @@ struct bn3f_lexeme ** bn3f_lex( FILE * f )
 	if(r)
 	{
 		fprintf( stderr,
-		"Error: file stream given is not seekable (are you using stdin?)\n" );
+			"Error: file stream given is not seekable (are you using stdin?)\n" );
 	}
 
-	lexemes = calloc( lexemes_sz, sizeof(struct bn3f_lexeme *) );
+	lexemes = calloc( lexemes_sz, sizeof(struct bn3f_lexeme *));
 
 	for(;;)
 	{
-		r = _bn3f_lex_loopiter( f, &streamoffs, &lexemes, &lexemes_sz );
+		r = _bn3f_lex_loopiter( f,
+			&streamoffs,
+			&lexemes,
+			&
+			lexemes_sz );
 
 		if(r)
 		{
