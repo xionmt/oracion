@@ -71,7 +71,7 @@ struct bn3f_lexeme ** bn3f_lex( FILE * );
 
 /** STATIC DATA FORWARD DECLARATIONS */
 
-static const char * const _dbg_lexemes[BN3F_MAX_LEXEME];
-_bn3f_scan_f _bn3f_scan[BN3F_MAX_LEXEME];
+extern const char * const _dbg_lexemes[BN3F_MAX_LEXEME];
+extern _bn3f_scan_f _bn3f_scan[BN3F_MAX_LEXEME];
 
 #endif /* INC__ORACION_COMMON_H */

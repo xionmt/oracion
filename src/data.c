@@ -3,7 +3,7 @@
 
 /** STATIC DATA DEFINITIONS */
 
-static const char * const _dbg_lexemes[BN3F_MAX_LEXEME] = {
+const char * const _dbg_lexemes[BN3F_MAX_LEXEME] = {
 	"COMMENT",
 	"WHITESPACE",
 	"STRINGLIT",
