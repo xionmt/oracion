@@ -1,0 +1,25 @@
+This file contains the project's copypastable boilerplate comment
+headers.
+
+Boilerplate for C-like languages:
+
+/**********************************************************************\
+ *                         Oracion  assembler                         *
+ *                                                                    *
+ *             Copyright (C) 2023-2024 Alexander Nicholi.             *
+ *            Copyright (C) 2024-2026 Xion Megatrends LLC.            *
+ *            Released under Artisan Software Licence v1.1            *
+\**********************************************************************/
+
+Hash-based boilerplate (Python, POSIX shell, Makefile):
+
+########################################################################
+##                         Oracion  assembler                         ##
+##                                                                    ##
+##             Copyright (C) 2023-2024 Alexander Nicholi.             ##
+##            Copyright (C) 2024-2026 Xion Megatrends LLC.            ##
+##            Released under Artisan Software Licence v1.1            ##
+########################################################################
+
+Additionally, a sanity check block to be placed at the top of every
+public API header:

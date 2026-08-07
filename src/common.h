@@ -1,3 +1,10 @@
+/**********************************************************************\
+ *                         Oracion  assembler                         *
+ *                                                                    *
+ *             Copyright (C) 2023-2024 Alexander Nicholi.             *
+ *            Copyright (C) 2024-2026 Xion Megatrends LLC.            *
+ *            Released under Artisan Software Licence v1.1            *
+\**********************************************************************/
 
 #ifndef INC__ORACION_COMMON_H
 #define INC__ORACION_COMMON_H

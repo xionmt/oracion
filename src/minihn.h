@@ -56,9 +56,14 @@ typedef __INTPTR_TYPE__ offs;
 /* Boolean */
 typedef int bl;
 /* ASCII character */
-typedef __UINT8_TYPE__ chr;
+typedef char chr;
 /* Unicode code point */
 typedef __UINT32_TYPE__ uchr;
+
+/* Signed bitfield */
+typedef signed int sbf;
+/* Unsigned bitfield */
+typedef unsigned int ubf;
 
 /* Helper function to check if a character is valid ASCII. */
 #define HN_CHR_ISVALID( _chr ) (((_chr) >= 0) && ((_chr) <= 127))

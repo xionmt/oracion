@@ -9,7 +9,8 @@ typedef u8 getopt2_flagopt_t;
 
 enum getopt2_modeopts
 {
-	/* Single-dash short flags and double-dash long flags are used. */
+	/* Single-dash short flags and double-dash long flags are used.
+	 */
 	GETOPT2_MODEOPT_MASK_FLAGS = 0x1,
 	/* Parameters (think file paths) end-to-start are used. */
 	GETOPT2_MODEOPT_MASK_ENDPARAMS = 0x2,
@@ -17,15 +18,15 @@ enum getopt2_modeopts
 	GETOPT2_MODEOPT_MASK_VERBS = 0x4,
 	/* One dash for `stdin`; two for flag parser termination. */
 	GETOPT2_MODEOPT_MASK_DASHES = 0x8,
-	/* Whether the form `--flag=value` is recognised. Otherwise only the
-	 * form `--flag value` is. Ignored if `GETOPT2_MODEOPT_MASK_VALUED`
-	 * is LOW. */
+	/* Whether the form `--flag=value` is recognised. Otherwise only
+	 * the form `--flag value` is. Ignored if
+	 * `GETOPT2_MODEOPT_MASK_VALUED` is LOW. */
 	GETOPT2_MODEOPT_MASK_LFLAGEQ = 0x10,
 	/* Whether short flags stack together `-likeso`. */
 	GETOPT2_MODEOPT_MASK_SFLAGSTACK = 0x20,
 	/* Whether successive flags override previous ones left-to-right
-	 * (it is otherwise treated as an error to have multiple conflicting
-	 * flags). */
+	 * (it is otherwise treated as an error to have multiple
+	 * conflicting flags). */
 	GETOPT2_MODEOPT_MASK_LTROVR = 0x40,
 	/* Mask of all reserved bits (must all be LOW). */
 	GETOPT2_MODEOPT_MASK_RESERVED = 0x80
@@ -43,10 +44,12 @@ enum getopt2_flagopts
 
 struct getopt2_flag
 {
-	/* short flag, not including any dashes. */
-	chr s;
 	/* long flag, not including any dashes. */
 	chr * l;
+	/* short flag, not including any dashes. */
+	chr s;
+	/* whether flag is expected after verbs, if verbs are in use. */
+	ubf afterverb : 1;
 };
 
 struct getopt2_args
@@ -55,22 +58,20 @@ struct getopt2_args
 	 * array, denominated in elements. */
 	ptri argc;
 	/* array of argument values, sized by `.argc`. each element is a
-	 * `NUL`-terminated string of ASCII characters with UTF-8 high-bit
-	 * tolerance (no UTF-8 validation is performed). */
+	 * `NUL`-terminated string of ASCII characters with UTF-8
+	 * high-bit tolerance (no UTF-8 validation is performed). */
 	chr ** argv;
 };
 
 struct getopt2_flagparam
 {
-	/* the value of the flag, as in presuming the flag is a key and it
-	 * takes a value like `--flag value`, `--flag=value` or `-f value`.
-	 * this will be `NULL` if no value was found. Leading dashes are
-	 * excluded. */
+	/* the value of the flag, as in presuming the flag is a key and
+	 * it takes a value like `--flag value`, `--flag=value` or
+	 * `-f value`. this will be `NULL` if no value was found.
+	 * Leading dashes are excluded. */
 	chr * value;
 	/* whether the requested flag was found in the args stream. */
-	u32 found : 1;
-	/* 0 = flag preceded verb, 1 = flag followed verb. */
-	u32 afterverb : 1;
+	ubf found : 1;
 };
 
 /**
@@ -91,6 +92,8 @@ struct getopt2_args getopt2_normalise( int, char ** );
  * TITLE: Get flag and potentially parameter from args
  * DESCRIPTION: Scan the args struct for a given flag and return its
  *              presence and potentially value.
+ * PARAMETER: List of verbs as a NULL-terminated array of
+ *            `chr * const` base type.
  * PARAMETER: Mode options. See enum getopt2_modeopts for details.
  * PARAMETER: Flag-specific options. See enum getopt2_flagopts for
  *            details.
@@ -106,6 +109,7 @@ struct getopt2_args getopt2_normalise( int, char ** );
  *        should be done either.
  */
 struct getopt2_flagparam getopt2_getflag(
+	chr **,
 	getopt2_modeopt_t,
 	getopt2_flagopt_t,
 	struct getopt2_flag,
@@ -115,6 +119,8 @@ struct getopt2_flagparam getopt2_getflag(
  * TITLE: Get a verb from args
  * DESCRIPTION: Finds a verb from the args struct. This is the first
  *              non-flag found during command invocation.
+ * PARAMETER: List of verbs as a NULL-terminated array of
+ *            `chr * const` base type.
  * PARAMETER: Mode options. See enum getopt2_modeopts for details.
  * PARAMETER: args struct to scan through.
  * RETURNS: The verb as stored in the original args struct.
@@ -122,7 +128,8 @@ struct getopt2_flagparam getopt2_getflag(
  *        memory allocation takes place, therefore no deallocation
  *        should be done either.
  */
-chr * getopt2_getverb(
+bl getopt2_getverb(
+	chr * const *,
 	getopt2_modeopt_t,
 	struct getopt2_args );
 
@@ -131,16 +138,21 @@ chr * getopt2_getverb(
  * DESCRIPTION: Enumerates the total number of parameters, discounting
  *              all flags, flag values and verbs.
  * PARAMETER: Mode options. See enum getopt2_modeopts for details.
+ * PARAMETER: List of verbs as a NULL-terminated array of
+ *            `chr * const` base type.
  * PARAMETER: Size of the flag list in the following parameter.
- * PARAMETER: List of flags that take values, to be ignored for the
- *            purposes of parsing parameters.
+ * PARAMETER: List of flags, to be ignored for the purposes of parsing
+ *            parameters.
+ * PARAMETER: List of flag options, to be used with the list of flags.
  * PARAMETER: args struct to scan through.
  * RETURNS: The total number of parameters in the args stream.
  */
 ptri getopt2_getparamcount(
 	getopt2_modeopt_t,
+	chr * const *,
 	ptri,
 	struct getopt2_flag *,
+	getopt2_flagopt_t *,
 	struct getopt2_args );
 
 /**
