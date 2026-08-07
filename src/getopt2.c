@@ -63,7 +63,7 @@ static bl _isstdin( chr * str )
 	return str[0] == '-' && str[1] == '\0';
 }
 
-static chr * _getflagval(
+static chr * _getlflagval(
 	struct getopt2_args args,
 	ptri i,
 	bl equsign )
@@ -71,7 +71,8 @@ static chr * _getflagval(
 	const ptri sz = _strleneqsign( args.argv[i] );
 
 	/* additional checking is needed as we may perform lookahead */
-	if((equsign && i >= args.argc) || (!equsign && i + 1 >= args.argc))
+	if((equsign && i >= args.argc) ||
+	(!equsign && i + 1 >= args.argc))
 	{
 		return NULL;
 	}
@@ -79,7 +80,8 @@ static chr * _getflagval(
 	/* several conditions are checked:
 	 *  1. if equal sign flag-value delimiting is sought
 	 *  2. if the equal sign is actually present in the flag
-	 * if these hold, it returns an in-place substring of the value */
+	 * if these hold, it returns an in-place substring of the value
+	 */
 	if(equsign && args.argv[i][sz] == '=')
 	{
 		/* advance past the '=' and return that as a string */
@@ -87,15 +89,48 @@ static chr * _getflagval(
 	}
 
 	/* if we reach HERE, it means either equal sign delimiting isn't
-	 * used, or that there was no equal sign detected if requested */
+	 * used, or that there was no equal sign detected if requested
+	 */
 
 	/* return the next parameter as the value, if it is present.
-	 * this function assumes the parameter is required, i.e. it does NOT
-	 * check high-level flag structure to see if the flag given needs
-	 * one */
+	 * this function assumes the parameter is required, i.e. it does
+	 * NOT check high-level flag structure to see if the flag given
+	 * needs one */
 	return i + 1 < args.argc
 		? args.argv[i + 1]
 		: NULL;
+}
+
+static bl _validate_lflag(
+	getopt2_modeopt_t modeopt,
+	struct getopt2_flag flag,
+	getopt2_flagopt_t flagopt,
+	struct getopt2_args args,
+	ptri i )
+{
+	chr * const inflag = &(args.argv[i][2]);
+	const bl flageq = (modeopt & GETOPT2_MODEOPT_MASK_LFLAGEQ);
+	const ptri inlen = flageq
+		? _strleneqsign( inflag )
+		: _strlen( inflag );
+	const ptri inlen_dumb = _strlen( inflag );
+	const ptri outlen = _strlen( flag.l );
+
+	if(!_strequ( inflag, flag.l, inlen, outlen ) ||
+	!(modeopt & GETOPT2_MODEOPT_MASK_FLAGS))
+	{
+		return FALSE;
+	}
+
+	if((flagopt & GETOPT2_FLAGOPT_MASK_VALUED) &&
+	(flagopt & GETOPT2_FLAGOPT_MASK_REQDVAL) &&
+	(!flageq || inlen_dumb == inlen) &&
+	i + i >= args.argc)
+	{
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 static bl _hnd_lflag(
@@ -117,9 +152,20 @@ static bl _hnd_lflag(
 	}
 
 	ret->found = 1;
-	ret->afterverb = (modeopt & GETOPT2_MODEOPT_MASK_VERBS) && i > 1
-		? 1 : 0;
-	ret->value = _getflagval( args, i, TRUE );
+	ret->value = _getlflagval( args, i, TRUE );
+
+	return TRUE;
+}
+
+static bl _validate_sflag(
+	getopt2_modeopt_t modeopt,
+	struct getopt2_flag flag,
+	getopt2_flagopt_t flagopt,
+	struct getopt2_args args,
+	ptri i )
+{
+	chr * const inflags = &(args.argv[i][1]);
+
 
 	return TRUE;
 }
@@ -143,12 +189,16 @@ static bl _hnd_sflag(
 			if((flagopt & GETOPT2_FLAGOPT_MASK_REQDVAL)
 			&& j + 1 < sz)
 			{
-				return TRUE;
+				return FALSE;
+			}
+
+			if((flagopt & GETOPT2_FLAGOPT_MASK_VALUED)
+			&& j + 1 == sz && i + 1 < args.argc)
+			{
+				ret->value = args.argv[i + 1];
 			}
 
 			ret->found = 1;
-			ret->afterverb = (modeopt & GETOPT2_MODEOPT_MASK_VERBS)
-				&& i > 1 ? 1 : 0;
 
 			return TRUE;
 		}
@@ -157,7 +207,45 @@ static bl _hnd_sflag(
 	return FALSE;
 }
 
+static bl _isflagval( struct getopt2_args args,
+	ptri i,
+	getopt2_modeopt_t modeopt,
+	struct getopt2_flag * flags,
+	getopt2_flagopt_t * flagopts,
+	ptri flags_sz )
+{
+	ptri j;
+	struct getopt2_flagparam dummy;
+
+	if(i <= 1)
+	{
+		return FALSE;
+	}
+
+	/* no need to check for equal-sign using parameters,
+	 * as we are backtracking */
+	modeopt &= ~GETOPT2_MODEOPT_MASK_LFLAGEQ;
+
+	for(j = 0; j < flags_sz; ++i)
+	{
+		if(!(flagopts[j] & GETOPT2_FLAGOPT_MASK_VALUED))
+		{
+			continue;
+		}
+
+		if(_hnd_lflag( modeopt, flagopts[j], flags[j], args,
+		i - 1, &dummy ) || _hnd_sflag( modeopt, flagopts[j],
+		flags[j], args, i - 1, &dummy ))
+		{
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
 struct getopt2_flagparam getopt2_getflag(
+	chr * * verbs,
 	getopt2_modeopt_t modeopt,
 	getopt2_flagopt_t flagopt,
 	struct getopt2_flag flag,
@@ -167,28 +255,7 @@ struct getopt2_flagparam getopt2_getflag(
 	struct getopt2_flagparam ret;
 
 	ret.found = 0;
-	ret.afterverb = 0;
 	ret.value = NULL;
 
-	if(!(modeopt & GETOPT2_MODEOPT_MASK_FLAGS)
-	|| (modeopt & GETOPT2_MODEOPT_MASK_RESERVED)
-	|| (flagopt & GETOPT2_FLAGOPT_MASK_RESERVED))
-	{
-		return ret;
-	}
-
-	/* i = 1 to skip program name, argv[0] */
-	for(i = 1; i < args.argc; ++i)
-	{
-		const bl hit = _islflag( args.argv[i] )
-			? _hnd_lflag( modeopt, flagopt, flag, args, i, &ret )
-			: _issflag( args.argv[i] )
-				? _hnd_sflag( modeopt, flagopt, flag, args, i, &ret )
-				: 0;
-
-		if(hit)
-		{
-			break;
-		}
-	}
+	return ret;
 }
