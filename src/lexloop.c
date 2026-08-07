@@ -39,8 +39,8 @@ int8_t _bn3f_lex_loopiter(
 	{
 		const int c = fgetc( f );
 
-		fprintf( stderr, "pos=%llu ch0='%c' (%i) fn=%s ... ", *streamoffs, c,
-			c, _dbg_lexemes[i] );
+		fprintf( stderr, "pos=%lu ch0='%c' (%i) fn=%s ... ",
+			*streamoffs, c, c, _dbg_lexemes[i] );
 		fflush( stderr );
 
 		ungetc( c, f );
