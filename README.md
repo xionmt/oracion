@@ -1,6 +1,7 @@
 # Oración assembler
 
-Copyright © 2023-2024 Alexander Nicholi.
+Copyright &copy; 2023-2024 Alexander Nicholi.  
+Copyright &copy; 2024-2026 Xion Megatrends LLC.  
 All rights reserved.
 
 -----
