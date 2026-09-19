@@ -12,7 +12,7 @@ See the [COPYING](/COPYING) file for full terms.
 Usage:
 
 ```
-oracion (h|help|-h|--help)
+oracion (-h|--help)
 	Display help message and exit.
 
 oracion abs [(-m|--map) <mapfile.ini>] (<input.os>|-) [<output.osa>]
