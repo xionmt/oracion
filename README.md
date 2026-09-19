@@ -4,6 +4,9 @@ Copyright &copy; 2023-2024 Alexander Nicholi.
 Copyright &copy; 2024-2026 Xion Megatrends LLC.  
 All rights reserved.
 
+Released under Artisan Software Licence v1.1.  
+See the [COPYING](/COPYING) file for full terms.
+
 -----
 
 Usage:
