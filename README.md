@@ -1,4 +1,4 @@
-# Oración assembler
+# Oraci&oacute;n assembler
 
 Copyright &copy; 2023-2024 Alexander Nicholi.  
 Copyright &copy; 2024-2026 Xion Megatrends LLC.  
@@ -18,8 +18,8 @@ oracion (h|help|-h|--help)
 oracion abs [(-m|--map) <mapfile.ini>] (<input.os>|-) [<output.osa>]
 	Translate high-level Oracion assembly (with labels, offsets and
 	external symbols) to low-level "absolute assembly" (with only
-	instructions, and relative or absolute numerics). If output.osa is
-	not provided, stdout is used.
+	instructions, and relative or absolute numerics). If output.osa
+	is not provided, stdout is used.
 
 oracion bin (<input.osa>|-) [<output.bin>]
 	Translate low-level "absolute assembly" into machine code. If
