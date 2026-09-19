@@ -3,14 +3,28 @@
 
 HELP_TEXT = '''
 Oracion assembler
-Copyright (C) 2023 Alexander Nicholi
+Copyright (C) 2023-2024 Alexander Nicholi.
+Copyright (C) 2024-2026 Xion Megatrends LLC.
+All rights reserved.
+
+Released under Artisan Software Licence v1.1.
 
 Usage:-
-\toracion [-h | --help]
+oracion (-h|--help)
+\tDisplay help message and exit.
 
-The program reads from stdin and writes to stdout. Pass -h or --help to
-print this text.
+oracion abs [(-m|--map) <mapfile.ini>] (<input.os>|-) [<output.osa>]
+\tTranslate high-level Oracion assembly (with labels, offsets and
+\texternal symbols) to low-level "absolute assembly" (with only
+\tinstructions, and relative or absolute numerics). If output.osa
+\tis not provided, stdout is used.
+
+oracion bin (<input.osa>|-) [<output.bin>]
+\tTranslate low-level "absolute assembly" into machine code. If
+\toutput.bin is not provided, stdout is used.
 '''
+
+INVALID_VERB = 'Invalid verb %s. Run oracion --help to see valid usage.'
 
 def convert(t: str):
 	ret = bytearray()
@@ -18,9 +32,14 @@ def convert(t: str):
 
 def main(args):
 	argc = len(args)
-	if '-h' in args or '--help' in args:
-		print(HELP_TEXT)
+	if '-h' in args or '--help' in args or argc < 2:
+		from sys import stderr
+		print(HELP_TEXT, file=stderr)
 		return 0
+	if args[1] != 'abs' and args[1] != 'bin':
+		from sys import stderr
+		print(INVALID_VERB % args[1], file=stderr)
+		return 1
 	from sys import stdin, stdout
 	intext = stdin.read()
 	outbin = convert(intext)
